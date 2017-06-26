@@ -111,6 +111,8 @@ ForEach ($CapturedUrl in $UrlDataSet.Tables[0])
 
     ForEach ($SearchTerm in $SearchTermsDataSet.Tables[0])
     {
+        Sleep -Seconds 30
+
         $SearchTermDescription = $SearchTerm.TermDescription
         $SearchTermID = $SearchTerm.SearchTermID
 
@@ -124,16 +126,16 @@ ForEach ($CapturedUrl in $UrlDataSet.Tables[0])
             $ErrorMessage = ($_.Exception).Message
             $ErrorStatusCode = ($_.Exception).Response.StatusCode.value__
 
-            $SqlInsertErrorLog = ("INSERT ps.ErrorLog (Routine,CapturedUrlID,StatusCode,ErrorMessage,DateLogged) VALUES ('SqlInsert',$UrlID,'"+$ErrorStatusCode+"','"+$ErrorMessage+"','"+$Timestamp+"')") 
+            $SqlInsertErrorLog = ("INSERT ps.ErrorLog (Routine,CapturedUrlID,StatusCode,ErrorMessage,DateLogged) VALUES ('SqlInsert',$UrlID,'"+$ErrorStatusCode+"','"+$ErrorMessage+"','"+$Timestamp+"')")
             $SqlCommand = $SqlConnection.CreateCommand()
             $SqlCommand.CommandText = $SqlInsertErrorLog
-            $SqlCommand.ExecuteNonQuery()            
+            $SqlCommand.ExecuteNonQuery()
         }
         
         $Result = ($Html -match $SearchTermDescription)
 
-        If ($Result -eq 1) 
-        {     
+        If ($Result -eq 1)
+        {
             Try
             {
                 $SqlUpdateUrlIfMatched = ("
@@ -151,11 +153,11 @@ ForEach ($CapturedUrl in $UrlDataSet.Tables[0])
                 $ErrorMessage = ($_.Exception).Message
                 $ErrorStatusCode = ($_.Exception).Number
         
-                $SqlInsertErrorLog = ("INSERT ps.ErrorLog (Routine,CapturedUrlID,StatusCode,ErrorMessage,DateLogged) VALUES ('SqlInsert',$UrlID,'"+$ErrorStatusCode+"','"+$ErrorMessage+"','"+$Timestamp+"')") 
+                $SqlInsertErrorLog = ("INSERT ps.ErrorLog (Routine,CapturedUrlID,StatusCode,ErrorMessage,DateLogged) VALUES ('SqlInsert',$UrlID,'"+$ErrorStatusCode+"','"+$ErrorMessage+"','"+$Timestamp+"')")
                 $SqlCommand = $SqlConnection.CreateCommand()
                 $SqlCommand.CommandText = $SqlInsertErrorLog
-                $SqlCommand.ExecuteNonQuery()  
+                $SqlCommand.ExecuteNonQuery()
             }
-        }   
+        }
     }
 }
